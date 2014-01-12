@@ -1,4 +1,4 @@
-var jsLog = {
+var jsConsole = {
     timerNames: [],
     cssPanelBox: {
         'background-color': '#fff',
