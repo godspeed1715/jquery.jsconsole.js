@@ -59,13 +59,14 @@ var jsConsole = {
         }
     },
   now: function() {
-    var performance = window.performance || {};
+    var performance = {};
     performance.now = (function() {
         return performance.now    ||
         performance.webkitNow     ||
         performance.msNow         ||
         performance.oNow          ||
-        performance.mozNow;       
+        performance.mozNow        ||
+        Date.now();
     })();
     return performance.now();
   },
