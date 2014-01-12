@@ -65,7 +65,8 @@ var jsConsole = {
         performance.webkitNow     ||
         performance.msNow         ||
         performance.oNow          ||
-        performance.mozNow;
+        performance.mozNow        ||
+        function() { return new Date().getTime(); };
     })();
     return performance.now();
   },
