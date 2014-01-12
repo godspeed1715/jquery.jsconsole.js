@@ -125,5 +125,13 @@ var jsConsole = {
             $("#__log-panel").css("display", "block");
             $("#__log-panel-menu-minimize").html("minimize");
         }
-    }
+    },
+    toggle: function() {
+        if ($("#__log-panel-box").css("display") == "block") {
+            $("#__log-panel-box").css("display", "none");
+        }
+        else {
+            $("#__log-panel-box").css("display", "block");
+        }
+  }
 };
