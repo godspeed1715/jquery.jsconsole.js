@@ -59,17 +59,17 @@ var jsLog = {
     },
     time: function(sTimerName) {
       this.timerNames.push({
-        TimerName : sTimerName,
-        StartTime: now()
+        sTimerName : sTimerName,
+        dStartTime: now()
       });
     },
     timeEnd: function(sTimerName) {
       if (this.timerNames.length !== 0 ) { 
-        var sEndTime = now();
+        var dEndTime = now();
         for (var x = 0; x< this.timerNames.length; x++) {
-          if (this.timerNames[x].TimerName === sTimerName) {
-             var TimerNameEnd = sEndTime - parseInt(this.timerNames[x].StartTime, 10);
-            this.write(  JSON.stringify(this.timerNames[x].TimerName).replace(/"/g,"") + " " + TimerNameEnd);
+          if (this.timerNames[x].sTimerName === sTimerName) {
+             var TimerNameEnd = dEndTime - parseInt(this.timerNames[x].dStartTime, 10);
+            this.write(  JSON.stringify(this.timerNames[x].sTimerName).replace(/"/g,"") + " " + TimerNameEnd);
           }
         }
       }
