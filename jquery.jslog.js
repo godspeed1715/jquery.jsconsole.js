@@ -49,27 +49,39 @@ var jsLog = {
         
         this.isOn = true;
     },
-    write: function(msg, pause) {
+    log: function(msg, pause) {
         if (this.isOn === true) {
-            $("#__log-panel").html($("#__log-panel").html() + msg + "<br/>" );
-
+            $("#__log-panel").append(msg + "<br>");
             if (pause !== undefined && pause === true)
                 alert("Click button to continue.");
+            //Scroll to bottom of textarea to simulate console
+            $("#__log-panel").scrollTop($("#__log-panel")[0].scrollHeight);
         }
     },
+  now: function() {
+    var performance = window.performance || {};
+    performance.now = (function() {
+        return performance.now    ||
+        performance.webkitNow     ||
+        performance.msNow         ||
+        performance.oNow          ||
+        performance.mozNow;       
+    })();
+    return performance.now();
+  },
     time: function(sTimerName) {
       this.timerNames.push({
         sTimerName : sTimerName,
-        dStartTime: now()
+        dStartTime: this.now()
       });
     },
     timeEnd: function(sTimerName) {
       if (this.timerNames.length !== 0 ) { 
-        var dEndTime = now();
+        var dEndTime = this.now();
         for (var x = 0; x< this.timerNames.length; x++) {
           if (this.timerNames[x].sTimerName === sTimerName) {
              var TimerNameEnd = dEndTime - parseInt(this.timerNames[x].dStartTime, 10);
-            this.write(  JSON.stringify(this.timerNames[x].sTimerName).replace(/"/g,"") + " " + TimerNameEnd);
+            this.log(  JSON.stringify(this.timerNames[x].sTimerName).replace(/"/g,"") + " " + TimerNameEnd);
           }
         }
       }
@@ -115,26 +127,3 @@ var jsLog = {
         }
     }
 };
-var now = (function() {
-    var performance = window.performance || {};
-    performance.now = (function() {
-        return performance.now    ||
-        performance.webkitNow     ||
-        performance.msNow         ||
-        performance.oNow          ||
-        performance.mozNow;       
-    })();
-    return performance.now();
-});
-
-var now = (function() {
-    var performance = window.performance || {};
-    performance.now = (function() {
-        return performance.now    ||
-        performance.webkitNow     ||
-        performance.msNow         ||
-        performance.oNow          ||
-        performance.mozNow;       
-    })();
-    return performance.now();
-});
