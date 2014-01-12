@@ -28,10 +28,10 @@ var jsConsole = {
         if (document.getElementById("__log-panel-box") === null) {
             var layout = '<div id="__log-panel-box">' +
                         '<div id="__log-panel-header">' +
-                            '<a href="javascript:void(0);" onclick="jsLog.onOff();" id="__log-panel-menu-disable">disable</a> | ' +
-                            '<a href="javascript:void(0);" onclick="jsLog.clear();">clear</a> | ' +
-                            '<a href="javascript:void(0);" id="__log-panel-menu-transparent" onclick="jsLog.transparent();">transparent</a> | ' +
-                            '<a href="javascript:void(0);" id="__log-panel-menu-minimize" onclick="jsLog.minimize();">minimize</a> ' +
+                            '<a href="javascript:void(0);" onclick="jsConsole.onOff();" id="__log-panel-menu-disable">disable</a> | ' +
+                            '<a href="javascript:void(0);" onclick="jsConsole.clear();">clear</a> | ' +
+                            '<a href="javascript:void(0);" id="__log-panel-menu-transparent" onclick="jsConsole.transparent();">transparent</a> | ' +
+                            '<a href="javascript:void(0);" id="__log-panel-menu-minimize" onclick="jsConsole.minimize();">minimize</a> ' +
                         '</div>' +
                         '<div id="__log-panel"></div>' +
                         '</div>';
