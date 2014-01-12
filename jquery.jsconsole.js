@@ -24,7 +24,7 @@ var jsConsole = {
         'text-align' : 'left'
     },
     isOn: false,
-    init: function() {
+    init: function () {
         if (document.getElementById("__log-panel-box") === null) {
             var layout = '<div id="__log-panel-box">' +
                         '<div id="__log-panel-header">' +
@@ -43,13 +43,13 @@ var jsConsole = {
             $("#__log-panel-header").css(this.cssPanelHeader);
         }
 
-        $(window).resize(function() {
+        $(window).resize(function () {
             $("#__log-panel-box").css("width", $(window).width() - 13);
         });
         
         this.isOn = true;
     },
-    log: function(msg, pause) {
+    log: function (msg, pause) {
         if (this.isOn === true) {
             $("#__log-panel").append(msg + "<br>");
             if (pause !== undefined && pause === true)
@@ -58,25 +58,25 @@ var jsConsole = {
             $("#__log-panel").scrollTop($("#__log-panel")[0].scrollHeight);
         }
     },
-  now: function() {
+  now: function () {
     var performance = window.performance ||{};
-    performance.now = (function() {
+    performance.now = (function () {
         return performance.now    ||
         performance.webkitNow     ||
         performance.msNow         ||
         performance.oNow          ||
         performance.mozNow        ||
-        function() { return new Date().getTime(); };
+        function () { return new Date().getTime(); };
     })();
     return performance.now();
   },
-    time: function(sTimerName) {
+    time: function (sTimerName) {
       this.timerNames.push({
         sTimerName : sTimerName,
         dStartTime: this.now()
       });
     },
-    timeEnd: function(sTimerName) {
+    timeEnd: function (sTimerName) {
       if (this.timerNames.length !== 0 ) { 
         var dEndTime = this.now();
         for (var x = 0; x< this.timerNames.length; x++) {
@@ -87,16 +87,16 @@ var jsConsole = {
         }
       }
     },
-    enable: function() {
+    enable: function () {
         this.isOn = true;
     },
-    disable: function() {
+    disable: function () {
         this.isOn = false;
     },
-    clear: function() {
+    clear: function () {
         $("#__log-panel").html("");
     },
-    onOff: function() {
+    onOff: function () {
         if (this.isOn === false) {
             this.enable();
             $("#__log-panel-menu-disable").html("disable");
@@ -107,7 +107,7 @@ var jsConsole = {
 
         }
     },
-    transparent: function() {
+    transparent: function () {
         if ($("#__log-panel-box").css("opacity") === "0.5") {
             $("#__log-panel-box").css("opacity", "1.0");
             $("#__log-panel-menu-transparent").html("transparent");
@@ -117,7 +117,7 @@ var jsConsole = {
             $("#__log-panel-menu-transparent").html("opaque");
         }
     },
-    minimize: function() {
+    minimize: function () {
         if ($("#__log-panel").css("display") === "block") {
             $("#__log-panel").css("display", "none");
             $("#__log-panel-menu-minimize").html("expand");
@@ -127,7 +127,7 @@ var jsConsole = {
             $("#__log-panel-menu-minimize").html("minimize");
         }
     },
-    toggle: function() {
+    toggle: function () {
         if ($("#__log-panel-box").css("display") == "block") {
             $("#__log-panel-box").css("display", "none");
         }
