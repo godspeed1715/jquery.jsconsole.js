@@ -1,4 +1,5 @@
 var jsLog = {
+    timerNames: [],
     cssPanelBox: {
         'background-color': '#fff',
         'color': '#000',
@@ -50,11 +51,28 @@ var jsLog = {
     },
     write: function(msg, pause) {
         if (this.isOn === true) {
-            $("#__log-panel").html(msg + "<br/>" + $("#__log-panel").html());
+            $("#__log-panel").html($("#__log-panel").html() + msg + "<br/>" );
 
             if (pause !== undefined && pause === true)
                 alert("Click button to continue.");
         }
+    },
+    time: function(sTimerName) {
+      this.timerNames.push({
+        TimerName : sTimerName,
+        StartTime: now()
+      });
+    },
+    timeEnd: function(sTimerName) {
+      if (this.timerNames.length !== 0 ) { 
+        var sEndTime = now();
+        for (var x = 0; x< this.timerNames.length; x++) {
+          if (this.timerNames[x].TimerName === sTimerName) {
+             var TimerNameEnd = sEndTime - parseInt(this.timerNames[x].StartTime, 10);
+            this.write(  JSON.stringify(this.timerNames[x].TimerName).replace(/"/g,"") + " " + TimerNameEnd);
+          }
+        }
+      }
     },
     enable: function() {
         this.isOn = true;
@@ -96,4 +114,27 @@ var jsLog = {
             $("#__log-panel-menu-minimize").html("minimize");
         }
     }
-}
+};
+var now = (function() {
+    var performance = window.performance || {};
+    performance.now = (function() {
+        return performance.now    ||
+        performance.webkitNow     ||
+        performance.msNow         ||
+        performance.oNow          ||
+        performance.mozNow;       
+    })();
+    return performance.now();
+});
+
+var now = (function() {
+    var performance = window.performance || {};
+    performance.now = (function() {
+        return performance.now    ||
+        performance.webkitNow     ||
+        performance.msNow         ||
+        performance.oNow          ||
+        performance.mozNow;       
+    })();
+    return performance.now();
+});
