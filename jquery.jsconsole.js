@@ -1,75 +1,143 @@
 var jsConsole = {
     timerNames: [],
-    cssPanelBox: {
-        'background-color': '#fff',
+     cssPanelBox: {
+        'width': '100%',
         'color': '#000',
-        'border-top': '5px solid #ccc',
         'font-family': 'Courier',
         'font-size': '12px',
-        'padding': '3px 3px 3px 10px',
+        'padding': '3px 0px 3px 0px',
         'position': 'fixed',
         'bottom': '0px',
         'left': '0px',
         'opacity': '1.0',
         'z-index': '10000'
     },
-    cssPanelHeader: {
-        'height': '18px',
+    cssPanelDragBar: {
+        'border-top': '3px solid #ededed',
         'border-bottom': '1px solid #ccc',
-        'text-align': 'right',
-        'font-family': 'Arial'
+        'width': '100%',
+        'cursor': 'row-resize'
     },
-    cssLogPanel: {
+    cssPanelHeader: {
+        'height': '24px',
+        'background': '#ededed',
+        'border-top': '1px solid #fff',
+        'border-bottom': '1px solid #cacaca',
+        'text-align': 'left',
+        'font-family': 'Arial'  
+    },
+    cssPanelConsole: {
         'overflow': 'auto',
-        'text-align' : 'left'
+        'height': '150px',
+        'padding': '5px',
+        'text-align': 'left',
+        'background':'#fff'
+    },
+    cssPanelNavigation: {
+        'height': '20px',
+        'width': '100%',
+        'background': '#ededed',
+        'color': '#ededed',
+        'border-top': '1px solid #cacaca'
     },
     isOn: false,
     init: function () {
-        if (document.getElementById("__log-panel-box") === null) {
-            var layout = '<div id="__log-panel-box">' +
-                        '<div id="__log-panel-header">' +
-                            '<a href="javascript:void(0);" onclick="jsConsole.onOff();" id="__log-panel-menu-disable">disable</a> | ' +
-                            '<a href="javascript:void(0);" onclick="jsConsole.clear();">clear</a> | ' +
-                            '<a href="javascript:void(0);" id="__log-panel-menu-transparent" onclick="jsConsole.transparent();">transparent</a> | ' +
-                            '<a href="javascript:void(0);" id="__log-panel-menu-minimize" onclick="jsConsole.minimize();">minimize</a> ' +
-                        '</div>' +
-                        '<div id="__log-panel"></div>' +
-                        '</div>';
-
+        if ($("panel-box")) {
+            var layout =  '<div id="panel-box">' +
+                '  <div id="panel-dragbar"></div>' +
+                '  <div id="panel-header">' +
+                '       <span onclick="jsConsole.onOff();" id="panel-menu-disable">Disable</span> ' +
+                '       <span onclick="jsConsole.clear();">Clear</span>  ' +
+                '       <span id="panel-menu-transparent" onclick="jsConsole.transparent();">Transparent</span> ' +
+                '       <span id="panel-menu-minimize" onclick="jsConsole.minimize();">Minimize</span> ' +
+                '   </div>' + 
+                '  <div id="panel-console"></div>' +
+                '  <div id="panel-bottom-nav"></div>' +
+                '</div>';
             var consolePanel = $(layout);
             $('body').append(consolePanel);
-            $("#__log-panel-box").css(this.cssPanelBox).css("width", $(window).width() - 13);
-            $("#__log-panel").css(this.cssLogPanel).css("height", "100px");
-            $("#__log-panel-header").css(this.cssPanelHeader);
-        }
-
-        $(window).resize(function () {
-            $("#__log-panel-box").css("width", $(window).width() - 13);
+            $("#panel-box").css(this.cssPanelBox);
+            $('#panel-dragbar').css(this.cssPanelDragBar);
+            $('#panel-header').css(this.cssPanelHeader);
+            $("#panel-console").css(this.cssPanelConsole);
+            $("#panel-bottom-nav").css(this.cssPanelNavigation);
+        };
+        //Drapbar to expand panel-consle div
+        $('#panel-dragbar').mousedown(function (e) {
+            e.preventDefault();
+            $(document).mousemove(function (e) {
+                var height = "innerHeight" in window ? window.innerHeight : document.documentElement.offsetHeight;
+                $('#panel-console').css("height", height - 48 - e.pageY);
+            });
         });
-        
+        $(document).mouseup(function (e) {
+            $(document).unbind('mousemove');
+        });
+        (function() {
+          if (!window.console) {
+            window.console = {};
+          }
+          console = window || window.console;
+          // union of Chrome, FF, IE, and Safari console methods
+          var method = [
+            "log", "info", "warn", "onerror", "debug", "trace", "dir", "group",
+            "groupCollapsed", "groupEnd", "time", "timeEnd", "profile", "profileEnd",
+            "dirxml", "assert", "count", "markTimeline", "timeStamp", "clear"
+          ];
+          // define undefined methods as noops to prevent errors
+          for (var i = 0; i < method.length; i++) {
+            if (!window.console[method[i]]) {
+                console[method[i]] = function() {
+
+                    var sArguments = "";
+                    for (var i = 0, j = arguments.length; i < j; i++){
+                    sArguments += arguments[i] + " ";
+                }
+                if (method[i] === "onerror") {
+                    var scriptNameURL = arguments[1]
+                    if (scriptNameURL.match('/') || scriptNameURL.match('\\')) {
+                        ExplodescriptName = scriptNameURL.split('/') || scriptNameURL.split('\\')
+                        scriptName = ExplodescriptName[ExplodescriptName.length - 1];
+                    } else {
+                        scriptName = arguments[1];
+                    }
+                    jsConsole.log('<div style="color: red;"><i class="fa fa-times-circle"></i> <span>' + arguments[0] +'</span> <a href="' + scriptNameURL +'" class="pull-right">' + scriptName + ":" + arguments[2] + '</a></div>');
+                } else {
+                    jsConsole.log('<i class="fa fa-info-circle"></i> <span>' + sArguments + "</span>");
+                    jsConsole.toggle();
+                }
+                return true;
+              };
+            }    
+          } 
+        })();
         this.isOn = true;
     },
     log: function (msg, pause) {
         if (this.isOn === true) {
-            $("#__log-panel").append(msg + "<br>");
-            if (pause !== undefined && pause === true)
+            $("#panel-console").append(msg + "<br>");
+            if (pause !== undefined && pause === true) {
                 alert("Click button to continue.");
+            }
             //Scroll to bottom of textarea to simulate console
-            $("#__log-panel").scrollTop($("#__log-panel")[0].scrollHeight);
+            this.consoleresize();
         }
     },
-  now: function () {
-    var performance = window.performance ||{};
-    performance.now = (function () {
-        return performance.now    ||
-        performance.webkitNow     ||
-        performance.msNow         ||
-        performance.oNow          ||
-        performance.mozNow        ||
-        function () { return new Date().getTime(); };
-    })();
-    return performance.now();
-  },
+    consoleresize: function () {
+        $("#panel-console").scrollTop($("#panel-console")[0].scrollHeight);
+    },
+      now: function () {
+        var performance = window.performance ||{};
+        performance.now = (function () {
+            return performance.now    ||
+            performance.webkitNow     ||
+            performance.msNow         ||
+            performance.oNow          ||
+            performance.mozNow        ||
+            function () { return new Date().getTime(); };
+        })();
+        return performance.now();
+      },
     time: function (sTimerName) {
       this.timerNames.push({
         sTimerName : sTimerName,
@@ -82,7 +150,7 @@ var jsConsole = {
         for (var x = 0; x< this.timerNames.length; x++) {
           if (this.timerNames[x].sTimerName === sTimerName) {
              var TimerNameEnd = dEndTime - parseInt(this.timerNames[x].dStartTime, 10);
-            this.log(  JSON.stringify(this.timerNames[x].sTimerName).replace(/"/g,"") + " " + TimerNameEnd);
+            this.log('<i class="fa fa-clock-o"></i> <span>' + JSON.stringify(this.timerNames[x].sTimerName).replace(/"/g,"") + ' ' + TimerNameEnd + '</span>');
           }
         }
       }
@@ -94,45 +162,56 @@ var jsConsole = {
         this.isOn = false;
     },
     clear: function () {
-        $("#__log-panel").html("");
+        $("#panel-console").html("");
     },
     onOff: function () {
         if (this.isOn === false) {
             this.enable();
-            $("#__log-panel-menu-disable").html("disable");
+            $("#panel-menu-disable").html("Disable");
         }
         else {
             this.disable();
-            $("#__log-panel-menu-disable").html("enable");
+            $("#panel-menu-disable").html("Enable");
 
         }
     },
     transparent: function () {
-        if ($("#__log-panel-box").css("opacity") === "0.5") {
-            $("#__log-panel-box").css("opacity", "1.0");
-            $("#__log-panel-menu-transparent").html("transparent");
+        if ($("#panel-box").css("opacity") === "0.5") {
+            $("#panel-box").css("opacity", "1.0");
+            $("#panel-menu-transparent").html("Transparent");
         }
         else {
-            $("#__log-panel-box").css("opacity", "0.5");
-            $("#__log-panel-menu-transparent").html("opaque");
+            $("#panel-box").css("opacity", "0.5");
+            $("#panel-menu-transparent").html("Opaque");
         }
     },
     minimize: function () {
-        if ($("#__log-panel").css("display") === "block") {
-            $("#__log-panel").css("display", "none");
-            $("#__log-panel-menu-minimize").html("expand");
+        if ($("#panel-console").css("display") === "block") {
+            this.panelConsoleHeight = $('#panel-console').height();
+            $("#panel-console").css({
+                "height": "0px",
+                "display": "none"
+            });
+            $("#panel-menu-minimize").html("Expand");
         }
         else {
-            $("#__log-panel").css("display", "block");
-            $("#__log-panel-menu-minimize").html("minimize");
+            $("#panel-console").css({
+                "height": this.panelConsoleHeight,
+                "display": "block"
+            });
+            $("#panel-menu-minimize").html("Minimize");
+            this.consoleresize();
         }
     },
     toggle: function () {
-        if ($("#__log-panel-box").css("display") == "block") {
-            $("#__log-panel-box").css("display", "none");
+        if ($("#panel-box").css("display") == "block") {
+            $("#panel-box").css("display", "none");
         }
         else {
-            $("#__log-panel-box").css("display", "block");
+            $("#panel-box").css("display", "block");
+            this.consoleresize();
         }
   }
 };
+
+
