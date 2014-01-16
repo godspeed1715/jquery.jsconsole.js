@@ -7,7 +7,7 @@ var jsConsole = {
         'font-size': '12px',
         'padding': '3px 0px 3px 0px',
         'position': 'fixed',
-        'bottom': '0px',
+        'bottom': '-4px',
         'left': '0px',
         'opacity': '1.0',
         'z-index': '10000'
@@ -29,7 +29,7 @@ var jsConsole = {
     cssPanelConsole: {
         'overflow': 'auto',
         'height': '150px',
-        'padding': '5px',
+        'padding': ' 0 5px 0 5px',
         'text-align': 'left',
         'background':'#fff'
     },
@@ -50,6 +50,7 @@ var jsConsole = {
                 '       <span onclick="jsConsole.clear();">Clear</span>  ' +
                 '       <span id="panel-menu-transparent" onclick="jsConsole.transparent();">Transparent</span> ' +
                 '       <span id="panel-menu-minimize" onclick="jsConsole.minimize();">Minimize</span> ' +
+                '       <span id="panel-menu-close" style="float: right; margin-right: 5px; cursor: pointer; color: grey;"><i class="fa fa-times"></i></span> ' +
                 '   </div>' + 
                 '  <div id="panel-console"></div>' +
                 '  <div id="panel-bottom-nav"></div>' +
@@ -67,11 +68,28 @@ var jsConsole = {
             e.preventDefault();
             $(document).mousemove(function (e) {
                 var height = "innerHeight" in window ? window.innerHeight : document.documentElement.offsetHeight;
-                $('#panel-console').css("height", height - 48 - e.pageY);
+                $('#panel-console').css("height", height - 48 - e.clientY);
             });
         });
         $(document).mouseup(function (e) {
             $(document).unbind('mousemove');
+        });
+
+        document.addEventListener('keydown', function(event) {
+            if (event.keyCode == 123) {
+                jsConsole.toggle();
+            }
+        }, true);
+        $('#panel-menu-close').bind({
+            mouseenter: function () {
+                $(this).find('i').css("color", "black");
+            },
+            mouseout: function () {
+                $(this).find('i').css("color", "grey");
+            },
+            click: function () {
+                jsConsole.toggle();
+            }
         });
         (function() {
           if (!window.console) {
@@ -101,10 +119,9 @@ var jsConsole = {
                     } else {
                         scriptName = arguments[1];
                     }
-                    jsConsole.log('<div style="color: red;"><i class="fa fa-times-circle"></i> <span>' + arguments[0] +'</span> <a href="' + scriptNameURL +'" class="pull-right">' + scriptName + ":" + arguments[2] + '</a></div>');
+                    jsConsole.log('<span style="color: red;"><i class="fa fa-times-circle"></i> <span>' + arguments[0] +'</span> <a href="' + scriptNameURL +'" class="pull-right">' + scriptName + ":" + arguments[2] + '</a></span>');
                 } else {
                     jsConsole.log('<i class="fa fa-info-circle"></i> <span>' + sArguments + "</span>");
-                    jsConsole.toggle();
                 }
                 return true;
               };
