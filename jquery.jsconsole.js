@@ -76,11 +76,13 @@ var jsConsole = {
         });
 
         document.addEventListener('keydown', function(event) {
-            if (event.keyCode == 123) {
-                jsConsole.toggle();
+            var keyCode = event.which || event.keycode;
+            if (keyCode == 123) { //F12 key is 123.
+                jsConsole.toggle(); //call toggle function.
             }
         }, true);
         $('#panel-menu-close').bind({
+            //Add a hover event for the close "x" in the panel header.
             mouseenter: function () {
                 $(this).find('i').css("color", "black");
             },
@@ -88,7 +90,7 @@ var jsConsole = {
                 $(this).find('i').css("color", "grey");
             },
             click: function () {
-                jsConsole.toggle();
+                jsConsole.toggle(); //call toggle function.
             }
         });
         (function() {
