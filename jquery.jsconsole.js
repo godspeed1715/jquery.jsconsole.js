@@ -216,8 +216,9 @@ var jsConsole = {
                 var dEndTime = jsConsole.now();
                 for (var x = 0; x< jsConsole.timerNames.length; x++) {
                   if (jsConsole.timerNames[x].sTimerName === sTimerName) {
-                     var TimerNameEnd = dEndTime - parseInt(jsConsole.timerNames[x].dStartTime, 10);
+                    var TimerNameEnd = dEndTime - parseInt(jsConsole.timerNames[x].dStartTime, 10);
                     jsConsole.log('<i class="fa fa-clock-o"></i> <span>' + JSON.stringify(jsConsole.timerNames[x].sTimerName).replace(/"/g,"") + ': ' + TimerNameEnd + '</span>');
+                    jsConsole.timerNames[x] = "";//temp fix to remove timer name.
                   }
                 }
               }
