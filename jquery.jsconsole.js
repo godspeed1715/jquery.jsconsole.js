@@ -39,13 +39,13 @@ var jsConsole = {
         'height': '20px',
         'width': '100%',
         'background': '#ededed',
-        'color': '#ededed',
-        'border-top': '1px solid #cacaca'
+        'border-top': '1px solid #cacaca',
+        'font-family': 'Arial'
     },
     cssCommandLine: {
-        'width': '95%',
-        'padding': '5px',
+        'width': '97%',
         'border': 'none',
+        'padding-left':'7px',
         'outline-width': '0px'
     },
     isOn: false,
@@ -54,17 +54,22 @@ var jsConsole = {
             var layout = '<div id="panel-box">' +
                 '  <div id="panel-dragbar"></div>' +
                 '  <div id="panel-header">' +
+                '<span style="position: relative;bottom: -1px; padding-left: 5px; font-weight: 700;">Console</span> ' + 
+                '<span style="position: relative;bottom: -1px;  padding-left: 5px;font-weight: 700;">Resources</span> ' + 
+                '       <span id="panel-menu-close" class="panel-menu-toolbar" style="float: right; margin-right: 8px; cursor: pointer; color: grey;" onclick="jsConsole.toggle();"><i class="fa fa-times"></i></span> ' +
+                '       <span id="panel-menu-minimize" class="panel-menu-toolbar" style="float: right; margin-top:1px;margin-right: 10px; cursor: pointer; color: grey;" onclick="jsConsole.minimize();"><i class="fa fa-caret-down"></i> </span> ' +
+
+                '   </div>' +
+                '<div id="panel-console-container" style="background:#fff">' +
+                '   <div id="panel-console"></div>' +   
+                '      <span style="background: #eee;padding-left: 4px;"><i class="fa fa-chevron-right"></i></span><input id="commandline">' +
+                '      <span id="panel-commandline"></span>' +
+                '</div>' +
+                '   <div id="panel-bottom-nav">' +
                 '       <span onclick="jsConsole.onOff();" id="panel-menu-disable">Disable</span> ' +
                 '       <span onclick="jsConsole.clear();">Clear</span>  ' +
-                '       <span id="panel-menu-transparent" onclick="jsConsole.transparent();">Transparent</span> ' +
-                '       <span id="panel-menu-minimize" onclick="jsConsole.minimize();">Minimize</span> ' +
-                '       <span id="panel-menu-close" style="float: right; margin-right: 5px; cursor: pointer; color: grey;"><i class="fa fa-times"></i></span> ' +
-                '   </div>' +
-                '   <div id="panel-console"></div>' +
-                '  <span id="panel-commandline">' +
-                '       <span><i class="fa fa-chevron-right"></i></span><input id="commandline">' +
-                '   </span>' +
-                '   <div id="panel-bottom-nav"></div>' +
+                '       <span id="panel-menu-transparent" onclick="jsConsole.transparent();"><i class="fa fa-adjust"></i></span> ' +
+                '</div>' +
                 '</div>';
             var consolePanel = $(layout);
             $('body').append(consolePanel);
@@ -75,7 +80,7 @@ var jsConsole = {
             $("#panel-console").css(this.cssPanelConsole);
             $('#panel-commandline, #commandline').css(this.cssCommandLine);
             $("#panel-bottom-nav").css(this.cssPanelNavigation);
-        };
+        }
         //Drapbar to expand panel-consle div
         $('#panel-dragbar').mousedown(function (e) {
             e.preventDefault();
@@ -84,7 +89,7 @@ var jsConsole = {
                 $('#panel-console').css("height", height - 48 - e.clientY);
             });
         });
-        $(document).mouseup(function (e) {
+        $(document).mouseup(function () {
             $(document).unbind('mousemove');
         });
 
@@ -93,15 +98,12 @@ var jsConsole = {
                 jsConsole.toggle();
             }
         }, true);
-        $('#panel-menu-close').bind({
+        $('.panel-menu-toolbar').bind({
             mouseenter: function () {
                 $(this).find('i').css("color", "black");
             },
             mouseout: function () {
                 $(this).find('i').css("color", "grey");
-            },
-            click: function () {
-                jsConsole.toggle();
             }
         });
         $('#commandline').on('keypress', function (event) {
@@ -122,7 +124,30 @@ var jsConsole = {
                     try {
                         var evalCmd = eval(sCmd);
                         if (typeof evalCmd === "object") {
-                            console.log(JSON.stringify(evalCmd))
+                          function censor(censor) {
+  var i = 0;
+
+  return function(key, value) {
+    if(i !== 0 && typeof(censor) === 'object' && typeof(value) == 'object' && censor == value) 
+      return '[Circular]'; 
+
+    if(i >= 29) // seems to be a harded maximum of 30 serialized objects?
+      return '[Unknown]';
+
+    ++i; // so we know we aren't using the original object anymore
+
+    return value;  
+  }
+}
+                          try {
+                            console.log(JSON.stringify(evalCmd));
+                          } catch (e) {
+                            try {
+                               console.log(JSON.stringify(evalCmd, censor(evalCmd)));
+                            } catch(e) {
+                              throw e
+                            }
+                          }
                         } else {
                             console.log(evalCmd);
                         }
@@ -136,9 +161,9 @@ var jsConsole = {
             }
         }).on('keydown', function (event) {
             if (event.which === 38) {
-                jsConsole.cmdHistoryPosition--
+                jsConsole.cmdHistoryPosition--;
                 if (jsConsole.cmdHistoryPosition < 0) jsConsole.cmdHistoryPosition = 0;
-                if (jsConsole.cmdHistory[jsConsole.cmdHistoryPosition] != undefined && jsConsole.cmdHistory[jsConsole.cmdHistoryPosition] !== '') {
+                if (jsConsole.cmdHistory[jsConsole.cmdHistoryPosition] !== undefined && jsConsole.cmdHistory[jsConsole.cmdHistoryPosition] !== '') {
                     $('#commandline').val(jsConsole.cmdHistory[jsConsole.cmdHistoryPosition]);
                     return false;
                 } else if (jsConsole.cmdHistoryPosition == jsConsole.cmdHistory.length) {
@@ -146,9 +171,9 @@ var jsConsole = {
                     return false;
                 }
             } else if (event.which == 40) {
-                jsConsole.cmdHistoryPosition++
+                jsConsole.cmdHistoryPosition++;
                 if (jsConsole.cmdHistoryPosition >= jsConsole.cmdHistory.length) jsConsole.cmdHistoryPosition = jsConsole.cmdHistory.length; //0
-                if (jsConsole.cmdHistory[jsConsole.cmdHistoryPosition] != undefined && jsConsole.cmdHistory[jsConsole.cmdHistoryPosition] !== '') {
+                if (jsConsole.cmdHistory[jsConsole.cmdHistoryPosition] !== undefined && jsConsole.cmdHistory[jsConsole.cmdHistoryPosition] !== '') {
                     $('#commandline').val(jsConsole.cmdHistory[jsConsole.cmdHistoryPosition]);
                     return false;
                 } else if (jsConsole.cmdHistoryPosition == jsConsole.cmdHistory.length) {
@@ -156,12 +181,12 @@ var jsConsole = {
                     return false;
                 }
             }
-        })
+        });
         $('#panel-console').on('click', function () {
             $('#commandline').focus();
         });
 
-        console = window //|| window.console;
+        console = window; //|| window.console;
         // union of Chrome, FF, IE, and Safari console methods
         var method = [
             "log", "info", "warn", "onerror", "debug", "trace", "dir", "group",
@@ -177,9 +202,10 @@ var jsConsole = {
                         sArguments += arguments[i] + " ";
                     }
                     if (method[i] === "onerror") {
-                        var scriptNameURL = arguments[1]
+                        var scriptName;
+                        var scriptNameURL = arguments[1];
                         if (scriptNameURL.match('/') || scriptNameURL.match('\\')) {
-                            ExplodescriptName = scriptNameURL.split('/') || scriptNameURL.split('\\')
+                            var ExplodescriptName = scriptNameURL.split('/') || scriptNameURL.split('\\');
                             scriptName = ExplodescriptName[ExplodescriptName.length - 1];
                         } else {
                             scriptName = arguments[1];
@@ -201,10 +227,10 @@ var jsConsole = {
                 jsConsole.log('<i class="fa fa-info-circle"></i> <span>' + arg + "</span>");
             },
             log: function (arg) {
-                jsConsole.log('<span style="padding-left: 18px;">' + arg + '</span>')
+                jsConsole.log('<span style="padding-left: 18px;">' + arg + '</span>');
             },
             warn: function (arg) {
-                jsConsole.log('<span style="color: yellow;"><i class="fa fa-warning"></i></span> <span>' + arg + '</span>')
+                jsConsole.log('<span style="color: yellow;"><i class="fa fa-warning"></i></span> <span>' + arg + '</span>');
             },
             error: function (arg) {
                 throw arg;
@@ -227,7 +253,7 @@ var jsConsole = {
                     }
                 }
             }
-        }
+        };
         this.isOn = true;
     },
     log: function (msg, pause) {
@@ -309,13 +335,13 @@ var jsConsole = {
                 "height": "0px",
                 "display": "none"
             });
-            $("#panel-menu-minimize").html("Expand");
+            $("#panel-menu-minimize").html('<i class="fa fa-caret-up"></i>');
         } else {
             $("#panel-console").css({
                 "height": this.panelConsoleHeight,
                 "display": "block"
             });
-            $("#panel-menu-minimize").html("Minimize");
+            $("#panel-menu-minimize").html('<i class="fa fa-caret-down"></i>');
             this.consoleresize();
         }
     },
