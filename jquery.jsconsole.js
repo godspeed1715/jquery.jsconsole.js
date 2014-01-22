@@ -45,31 +45,30 @@ var jsConsole = {
     cssCommandLine: {
         'width': '97%',
         'border': 'none',
-        'padding-left':'7px',
+        'padding-left': '7px',
         'outline-width': '0px'
     },
     isOn: false,
     init: function () {
         if ($("panel-box")) {
             var layout = '<div id="panel-box">' +
-                '  <div id="panel-dragbar"></div>' +
-                '  <div id="panel-header">' +
-                '<span style="position: relative;bottom: -1px; padding-left: 5px; font-weight: 700;">Console</span> ' + 
-                '<span style="position: relative;bottom: -1px;  padding-left: 5px;font-weight: 700;">Resources</span> ' + 
+                '	<div id="panel-dragbar"></div>' +
+                '	<div id="panel-header">' +
+                '		<span style="position: relative;bottom: -1px; padding-left: 5px; font-weight: 700;">Console</span> ' +
+                '		<span style="position: relative;bottom: -1px;  padding-left: 5px;font-weight: 700;">Resources</span> ' +
                 '       <span id="panel-menu-close" class="panel-menu-toolbar" style="float: right; margin-right: 8px; cursor: pointer; color: grey;" onclick="jsConsole.toggle();"><i class="fa fa-times"></i></span> ' +
                 '       <span id="panel-menu-minimize" class="panel-menu-toolbar" style="float: right; margin-top:1px;margin-right: 10px; cursor: pointer; color: grey;" onclick="jsConsole.minimize();"><i class="fa fa-caret-down"></i> </span> ' +
-
                 '   </div>' +
-                '<div id="panel-console-container" style="background:#fff">' +
-                '   <div id="panel-console"></div>' +   
-                '      <span style="background: #eee;padding-left: 4px;"><i class="fa fa-chevron-right"></i></span><input id="commandline">' +
-                '      <span id="panel-commandline"></span>' +
-                '</div>' +
-                '   <div id="panel-bottom-nav">' +
-                '       <span onclick="jsConsole.onOff();" id="panel-menu-disable">Disable</span> ' +
-                '       <span onclick="jsConsole.clear();">Clear</span>  ' +
-                '       <span id="panel-menu-transparent" onclick="jsConsole.transparent();"><i class="fa fa-adjust"></i></span> ' +
-                '</div>' +
+                '	<div id="panel-console-container" style="background:#fff">' +
+                '   	<div id="panel-console"></div>' +
+                '      	<span style="background: #eee;padding-left: 4px;"><i class="fa fa-chevron-right"></i></span><input id="commandline">' +
+                '      	<span id="panel-commandline"></span>' +
+                '	</div>' +
+                '	<div id="panel-bottom-nav">' +
+                '		<span onclick="jsConsole.onOff();" id="panel-menu-disable">Disable</span> ' +
+                '		<span onclick="jsConsole.clear();">Clear</span>  ' +
+                '		<span id="panel-menu-transparent" onclick="jsConsole.transparent();"><i class="fa fa-adjust"></i></span> ' +
+                '	</div>' +
                 '</div>';
             var consolePanel = $(layout);
             $('body').append(consolePanel);
@@ -124,30 +123,30 @@ var jsConsole = {
                     try {
                         var evalCmd = eval(sCmd);
                         if (typeof evalCmd === "object") {
-                          function censor(censor) {
-  var i = 0;
+                            function censor(censor) {
+                                var i = 0;
 
-  return function(key, value) {
-    if(i !== 0 && typeof(censor) === 'object' && typeof(value) == 'object' && censor == value) 
-      return '[Circular]'; 
+                                return function (key, value) {
+                                    if (i !== 0 && typeof (censor) === 'object' && typeof (value) == 'object' && censor == value)
+                                        return '[Circular]';
 
-    if(i >= 29) // seems to be a harded maximum of 30 serialized objects?
-      return '[Unknown]';
+                                    if (i >= 29) // seems to be a harded maximum of 30 serialized objects?
+                                        return '[Unknown]';
 
-    ++i; // so we know we aren't using the original object anymore
+                                    ++i; // so we know we aren't using the original object anymore
 
-    return value;  
-  }
-}
-                          try {
-                            console.log(JSON.stringify(evalCmd));
-                          } catch (e) {
-                            try {
-                               console.log(JSON.stringify(evalCmd, censor(evalCmd)));
-                            } catch(e) {
-                              throw e
+                                    return value;
+                                }
                             }
-                          }
+                            try {
+                                console.log(JSON.stringify(evalCmd));
+                            } catch (e) {
+                                try {
+                                    console.log(JSON.stringify(evalCmd, censor(evalCmd)));
+                                } catch (e) {
+                                    throw e
+                                }
+                            }
                         } else {
                             console.log(evalCmd);
                         }
