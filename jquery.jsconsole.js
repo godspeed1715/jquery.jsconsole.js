@@ -52,10 +52,10 @@ var jsConsole = {
     init: function () {
         if ($("panel-box")) {
             var layout = '<div id="panel-box">' +
-                '	<div id="panel-dragbar"></div>' +
-                '	<div id="panel-header">' +
+                '   <div id="panel-dragbar"></div>' +
+                '   <div id="panel-header">' +
                 '		<span style="position: relative;bottom: -1px; padding-left: 5px; font-weight: 700;">Console</span> ' +
-                '		<span style="position: relative;bottom: -1px;  padding-left: 5px;font-weight: 700;">Resources</span> ' +
+                '       <span style="position: relative;bottom: -1px;  padding-left: 5px;font-weight: 700;">Resources</span> ' +
                 '       <span id="panel-menu-close" class="panel-menu-toolbar" style="float: right; margin-right: 8px; cursor: pointer; color: grey;" onclick="jsConsole.toggle();"><i class="fa fa-times"></i></span> ' +
                 '       <span id="panel-menu-minimize" class="panel-menu-toolbar" style="float: right; margin-top:1px;margin-right: 10px; cursor: pointer; color: grey;" onclick="jsConsole.minimize();"><i class="fa fa-caret-down"></i> </span> ' +
                 '   </div>' +
