@@ -22,9 +22,15 @@ To toggle the console onload place this code after jsConsole.init()
 jsConsole.toggle();
 ```
 
+##Features
+* Ability to use console.* for debugging
+* time() and timeEnd() to find execution time of function or scripts.
+* Ability to enter commands within the console to debug scripts, and functions.
+* Command History (Type history in the console.)
+* Clearing of console log (Type clear in the console.)
+
 ##Dependencies
 * jQuery
-* Bootstrap
 * FontAwesome
 
 ##Credit
