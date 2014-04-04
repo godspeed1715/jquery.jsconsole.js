@@ -28,6 +28,7 @@ jsConsole.toggle();
 * Ability to enter commands within the console to debug scripts, and functions.
 * Command History (Type history in the console.)
 * Clearing of console log (Type clear in the console.)
+* Ability to toggle console by either the F12 key or by using the toggle method of jsConsole ie. jsConosle.toggle()
 
 ##Dependencies
 * jQuery
