@@ -1,4 +1,4 @@
-jquery.jslog.js
+jquery.jsconsole.js
 ===============
 
 jsConsole is a Javascript Console Log for HTAs (HTML Applications) which works with jQuery to implement console.log, console.info, and console.error. It will also log errors that would normally appear in a popup box. It is a tool for developing HTAs that once you start using is impossible to stop, because it increases HTA development productivity and decreases development time. Never again use alert() to debug your HTA application. It's currently in APLHA and needs some work but is in a stable state and is currently useable. The jsConsole.js file is only 15 KB and incorporates all the requried features that a develeoper needs to adiquatly develop and debug an HTA application.
