@@ -31,8 +31,8 @@ jsConsole.toggle();
 * Ability to toggle console by either the F12 key or by using the toggle method of jsConsole ie. jsConosle.toggle()
 
 ##Dependencies
-* jQuery
-* FontAwesome
+* jQuery 1.9.x
+* FontAwesome 4.0.x 
 
 ##Credit
 
